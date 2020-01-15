@@ -14,7 +14,7 @@
 | Azure CLI | https://docs.microsoft.com/cli/azure/install-azure-cli |
 | Azure Storage Explorer | https://azure.microsoft.com/features/storage-explorer/ |
 | Git for Windows | https://git-scm.com/download/win |
-| .NET Core 2.2 SDK | https://dotnet.microsoft.com/download |
+| .NET Core 3.1 SDK | https://dotnet.microsoft.com/download |
 | Set Execution Policy for Scripts | In Windows Powershell execute the command Set-ExecutionPolicy Unrestricted  |
 | For more of two Azure Subscriptions | In Windows Powershell execute the command Select-AzSubscription -Subscription "SubscriptionName" |
 | For more of two Azure Subscription | In Azure CLI execute the command az account set --subscription <name or id> |
