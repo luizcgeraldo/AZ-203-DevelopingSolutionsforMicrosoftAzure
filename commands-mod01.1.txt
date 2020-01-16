@@ -1,0 +1,62 @@
+------------------------------------------------------
+# Create an Azure VM by using PowerShell             #
+------------------------------------------------------
+Connect-AzAccount
+New-AzResourceGroup -Name "MyResourceGroup" -Location CentralUS
+New-AzVm `
+    -ResourceGroupName "MyResourceGroup-QA" `
+    -Name "MyVM-QA" `
+    -Location "Central US" `
+    -VirtualNetworkName "myVnet" `
+    -SubnetName "mySubnet" `
+    -SecurityGroupName "myNetworkSecurityGroup" `
+    -PublicIpAddressName "myPublicIpAddress-qa" `
+    -OpenPorts 80,3389
+
+------------------------------------------------------
+# Accessing an Azure VM by using PowerShell          #
+------------------------------------------------------
+Get-AzPublicIpAddress -ResourceGroupName "MyResourceGroup" | Select "ipaddress“
+mstsc /v:"ipaddress"
+(Optional) Install-WindowsFeature -name Web-Server –IncludeManagementTools
+
+------------------------------------------------------
+# Finding image sources by using the Azure CLI       #
+------------------------------------------------------
+# Get a list of all publishers available in the East US region
+az vm image list-publishers --location eastus
+# Get a list of all offers for the MicrosoftWindowsServer publisher
+az vm image list-offers --location eastus --publisher MicrosoftWindowsServer
+# Get a list of SKUs for the WindowsServer offer
+az vm image list-skus --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer
+# Get a list of all images available for the 2019-Datacenter SKU
+az vm image list --all --location eastus --publisher MicrosoftWindowsServer --offer WindowsServer --sku 2019-Datacenter
+
+------------------------------------------------------
+# Create ARM templates by using Azure CLI            #
+------------------------------------------------------
+$resourceGroupName="MyResourceGroup-Win"
+$deploymentName="deployment203"
+$location="centralus"
+az group create --name $resourceGroupName --location $location
+az group deployment create --name $deploymentName --resource-group $resourceGroupName --template-file "c:\templates\template-win.json" --parameters "c:\templates\parameters-win.json“
+az storage account show --resource-group $resourceGroupName --name $storageAccountName
+
+------------------------------------------------------
+# Create Azure Key Vault by using Azure PowerShell   #
+------------------------------------------------------
+New-AzKeyVault -Location "centralus" `
+    -ResourceGroupName "MyResourceGroup-Win" `
+    -VaultName "kv-dev-203" `
+    -EnabledForDiskEncryption
+
+------------------------------------------------------
+# Encrypt existing VM disks by using Azure CLI       #
+------------------------------------------------------
+az keyvault update --name "kv-dev-203" --resource-group "MyResourceGroup-Win" --enabled-for-disk-encryption "true"
+
+az vm encryption enable --resource-group "MyResourceGroup-Win" --name "SimpleWinVM" --disk-encryption-keyvault "kv-dev-203" --volume-type [all] 
+
+az vm encryption show --resource-group "MyResourceGroup-Win" --name "SimpleWinVM"
+
+
